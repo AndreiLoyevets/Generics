@@ -9,10 +9,10 @@ import java.util.List;
  * and to get a collection of elements that are larger than the given value.
  * 
  * @author Andrii_Loievets
- * @version 1.0 31-March-2014
+ * @version 2.0 2-April-2014
  */
 public class CollectionUtils {
-    public <F, G> void copyAll(Collection<F> collection, Collection<G> out) {
+    public <E> void copyAll(Collection<E> collection, Collection<? super E> out) {
         if (collection == null) {
             throw new NullPointerException("Cannot copy from null source");
         }
@@ -21,12 +21,14 @@ public class CollectionUtils {
             out = new ArrayList<>();
         }
         
-        for (F elem : collection) {
-            out.add((G) elem);
+        for (E elem : collection) {
+            out.add(elem);
         }
+        
+        System.out.println("Success");
     }
     
-    public <E extends Comparable> Collection<E>
+    public <E extends Comparable<E>> Collection<E>
         getLargerThen(Collection<E> collection, E limit) {
             
         Collection<E> result = new ArrayList<>();
