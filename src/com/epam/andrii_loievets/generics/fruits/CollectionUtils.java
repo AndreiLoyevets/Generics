@@ -9,9 +9,13 @@ import java.util.List;
  * and to get a collection of elements that are larger than the given value.
  * 
  * @author Andrii_Loievets
- * @version 2.0 2-April-2014
+ * @version 3.0 2-April-2014
  */
 public class CollectionUtils {
+    
+    /* Collection<? super E> means that out must be parametrized by type E
+     * or one of its super classes to allow adding elements of type E.
+    */
     public <E> void copyAll(Collection<E> collection, Collection<? super E> out) {
         if (collection == null) {
             throw new NullPointerException("Cannot copy from null source");
@@ -24,12 +28,26 @@ public class CollectionUtils {
         for (E elem : collection) {
             out.add(elem);
         }
-        
-        System.out.println("Success");
     }
     
-    public <E extends Comparable<E>> Collection<E>
-        getLargerThen(Collection<E> collection, E limit) {
+    /* Comparable<? super E> means that E or one of its super classes must
+     * implement Comparable.
+     *
+     * We write 'Collection<? extends E> collection' to be sure we can pass a
+     * collection parametrized by some T (T extends E) and compare it with E.
+     * For example, this allows us the following:
+     *
+     * getLargerThen(Collection<RedApple> collection, Apple limit) and even
+     * getLargerThen(Collection<RedApple> collection, GreenApple limit)
+     *
+     * not only
+     *
+     * getLargerThen(Collection<Apple> collection, RedApple limit) or
+     * getLargerThen(Collection<RedApple> collection, RedApple limit)
+     * 
+    */
+    public <E extends Comparable<? super E>> Collection<E>
+        getLargerThen(Collection<? extends E> collection, E limit) {
             
         Collection<E> result = new ArrayList<>();
         
@@ -56,15 +74,17 @@ public class CollectionUtils {
     }
     
     public void testLargerThen() {
-        Collection<Apple> apples = new ArrayList<>();
+        Collection<RedApple> apples = new ArrayList<>();
         
         for (int i = 1; i < 11; ++i) {
-            apples.add(new Apple(i));
+            apples.add(new RedApple(i));
         }
         
-        Collection<Apple> greaterThenFive = getLargerThen(apples, new Apple(5));
+        // Since Apple is Comparable<Apple> we can compare Apples and RedApples.
+        Collection<RedApple> largerThenFive
+                = getLargerThen(apples, new RedApple(5));
         
-        for (Apple apple : greaterThenFive) {
+        for (Apple apple : largerThenFive) {
             System.out.println(apple.getWeight());
         }
     }
