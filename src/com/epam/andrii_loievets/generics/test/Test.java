@@ -8,7 +8,7 @@ public class Test {
 
     public static void main(String[] args) {
         Camera c1 = new Camera(1, 10);
-        VideoCamera c2 = new VideoCamera(1, 12);
+        VideoCamera c2 = new VideoCamera(1, 12, 200);
 
         System.out.println(c1.compareTo(c2));
     }
@@ -32,7 +32,7 @@ class Product<T extends Product<T>> implements Comparable<T> {
     }
 }
 
-class Camera<T extends Camera<T>> extends Product<Camera<T>> {
+class Camera<T extends Camera<T>> extends Product<T> {
 
     protected final int mpx;
 
@@ -42,7 +42,7 @@ class Camera<T extends Camera<T>> extends Product<Camera<T>> {
     }
 
     @Override
-    public int subCompare(Camera o) {
+    public int subCompare(T o) {
         int parentComp = super.subCompare(o);
 
         if (parentComp != 0) {
@@ -55,7 +55,7 @@ class Camera<T extends Camera<T>> extends Product<Camera<T>> {
     }
 }
 
-class VideoCamera<T extends VideoCamera<T>> extends Camera<VideoCamera<T>> {
+class VideoCamera<T extends VideoCamera<T>> extends Camera<T> {
     protected final int recordDuration;
 
     public VideoCamera(int price, int mpx, int recordDuration) {
@@ -64,7 +64,7 @@ class VideoCamera<T extends VideoCamera<T>> extends Camera<VideoCamera<T>> {
     }
 
     @Override
-    public int subCompare(VideoCamera o) {
+    public int subCompare(T o) {
         int parentComp = super.compareTo(o);
 
         if (parentComp != 0) {
